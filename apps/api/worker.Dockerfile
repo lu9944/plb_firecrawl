@@ -1,5 +1,5 @@
 # worker.Dockerfile
-FROM node:20 AS base
+FROM node:lts AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 LABEL fly_launch_runtime="Node.js"
@@ -8,12 +8,16 @@ COPY . /app
 WORKDIR /app
 
 FROM base AS prod-deps
+RUN corepack prepare pnpm@latest --activate
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 FROM base AS build
+RUN corepack prepare pnpm@latest --activate
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
+RUN corepack prepare pnpm@latest --activate
 RUN pnpm install
+RUN corepack prepare pnpm@latest --activate
 RUN pnpm run build
 
 FROM base
