@@ -1,5 +1,5 @@
 # worker.Dockerfile
-FROM node:20-slim AS base
+FROM node:lts
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 LABEL fly_launch_runtime="Node.js"
